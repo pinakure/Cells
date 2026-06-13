@@ -1,0 +1,24 @@
+networks:
+  proxy_primary-network:
+    external: true
+  proxy_sql-network:
+    external: true
+
+services:
+  cells-service:
+    image: php:8.3-fpm
+    container_name: cells
+    hostname: cells
+    volumes:
+      - /src/cells/web:/var/www/html/cells
+      - /src/cells/www.conf:/usr/local/php-fpm.d/www.conf
+      - /var/log:/var/log
+    networks:
+      - proxy_sql-network
+      - proxy_primary-network
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
